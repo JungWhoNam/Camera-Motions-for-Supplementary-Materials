@@ -7,19 +7,23 @@ namespace CameraMotions
     public class PanMotion : MonoBehaviour
     {
         public Camera movingCamera;
+
         public Transform from;
         public Transform to;
 
         [Range(0.0f, 1.0f)]
         public float progress;
         [Range(0.0f, 1.0f)]
-        public float incAmtPerSes = 0.1f;
+        public float incAmtPerSec = 0.1f;
         public bool loop = false;
+        public bool backward = false;
 
         private void Update()
         {
-            progress += incAmtPerSes * Time.deltaTime;
-            if (loop) progress = progress > 1f ? 0 : progress;
+            progress += (backward ? -1 * incAmtPerSec : incAmtPerSec) * Time.deltaTime;
+
+            if (loop && backward) progress = progress < 0f ? 1f : progress;
+            else if (loop && !backward) progress = progress > 1f ? 0 : progress;
             else progress = Mathf.Clamp01(progress);
 
             UpdateCamera(progress);
